@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Web-based Augmented Reality application using image tracking">
+    <meta name="theme-color" content="#000000">
+    
+    <title>AR Image Tracking Application</title>
+    
+    <!-- MindAR Image Library -->
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image.prod.js"></script>
+    
+    <!-- MindAR + Three.js Integration -->
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-three.prod.js"></script>
+    
+    <!-- Three.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.156.0/build/three.min.js"></script>
+    
+    <!-- GLTF Loader for 3D Models -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.156.0/examples/js/loaders/GLTFLoader.js"></script>
+    
+    <!-- HLS.js for video streaming (optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    
+    <!-- Application Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Preconnect to CDN for faster loading -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+</head>
+<body>
+    <!-- Main AR Container -->
+    <div id="ar-container" role="main" aria-label="Augmented Reality View"></div>
+    
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" role="status" aria-live="polite">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p class="loading-text">Initializing AR Experience...</p>
+            <div class="loading-progress">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Instructions Overlay -->
+    <div id="instructions" class="instruction-pill">
+        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+            <line x1="7" y1="2" x2="7" y2="22"></line>
+            <line x1="17" y1="2" x2="17" y2="22"></line>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <line x1="2" y1="7" x2="7" y2="7"></line>
+            <line x1="2" y1="17" x2="7" y2="17"></line>
+            <line x1="17" y1="17" x2="22" y2="17"></line>
+            <line x1="17" y1="7" x2="22" y2="7"></line>
+        </svg>
+        <span id="instruction-text">Point your camera at the target image</span>
+    </div>
+    
+    <!-- Video Controls UI -->
+    <div id="video-controls" class="video-controls-bar" style="display: none;">
+        <button id="play-pause-btn" class="control-btn" aria-label="Play/Pause">
+            <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+        </button>
+        
+        <div class="seek-container">
+            <input type="range" id="seek-bar" class="seek-bar" min="0" max="100" value="0" aria-label="Video seek bar">
+            <span id="time-display" class="time-display">0:00 / 0:00</span>
+        </div>
+        
+        <div class="volume-container">
+            <button id="mute-btn" class="control-btn" aria-label="Mute/Unmute">
+                <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                </svg>
+            </button>
+            <input type="range" id="volume-bar" class="volume-bar" min="0" max="100" value="80" aria-label="Volume control">
+        </div>
+        
+        <button id="fullscreen-btn" class="control-btn" aria-label="Toggle fullscreen" style="display: none;">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+            </svg>
+        </button>
+    </div>
+    
+    <!-- Recording Controls -->
+    <div id="recording-controls" class="recording-controls" style="display: none;">
+        <button id="record-btn" class="record-btn" aria-label="Start/Stop recording">
+            <svg class="icon record-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="12" r="8"></circle>
+            </svg>
+            <span class="record-text">Record</span>
+        </button>
+        <span id="record-timer" class="record-timer">0:00</span>
+    </div>
+    
+    <!-- Action Buttons (bottom right) -->
+    <div id="action-buttons" class="action-buttons">
+        <button id="toggle-record-btn" class="action-btn" aria-label="Toggle recording controls" title="Recording">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+            </svg>
+        </button>
+        
+        <button id="settings-btn" class="action-btn" aria-label="Settings" title="Settings">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M12 1v6m0 6v6m7.07-7.07l-4.24 4.24m0-8.49l4.24 4.24M1 12h6m6 0h6m-7.07 7.07l4.24-4.24m0 0l-4.24-4.24"></path>
+            </svg>
+        </button>
+        
+        <button id="info-btn" class="action-btn" aria-label="Information" title="Help">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+        </button>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button id="close-settings" class="close-btn" aria-label="Close">
+                    <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-group">
+                    <label for="debug-mode">
+                        <input type="checkbox" id="debug-mode">
+                        <span>Debug Mode (Show helpers)</span>
+                    </label>
+                </div>
+                <div class="setting-group">
+                    <label for="auto-rotate">
+                        <input type="checkbox" id="auto-rotate" checked>
+                        <span>Auto-rotate 3D models</span>
+                    </label>
+                </div>
+                <div class="setting-group">
+                    <label>Max Tracking Targets</label>
+                    <input type="range" id="max-track" min="1" max="5" value="2" step="1">
+                    <span id="max-track-value">2</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Info Modal -->
+    <div id="info-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>How to Use</h2>
+                <button id="close-info" class="close-btn" aria-label="Close">
+                    <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="info-section">
+                    <h3>Getting Started</h3>
+                    <ol>
+                        <li>Allow camera access when prompted</li>
+                        <li>Point your camera at a target image</li>
+                        <li>Keep the camera steady for best tracking</li>
+                        <li>3D content will appear when target is detected</li>
+                    </ol>
+                </div>
+                <div class="info-section">
+                    <h3>Target Images</h3>
+                    <p>For best results, use images with:</p>
+                    <ul>
+                        <li>High contrast and distinct features</li>
+                        <li>Good lighting conditions</li>
+                        <li>Minimum size of 10cm when printed</li>
+                        <li>Flat, non-reflective surface</li>
+                    </ul>
+                </div>
+                <div class="info-section">
+                    <h3>Controls</h3>
+                    <p><strong>Video:</strong> Use the bottom controls to play/pause and adjust volume</p>
+                    <p><strong>Recording:</strong> Tap the record button to capture your AR session</p>
+                    <p><strong>Settings:</strong> Customize tracking and display options</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Error Display -->
+    <div id="error-message" class="error-toast" style="display: none;" role="alert">
+        <svg class="icon error-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+        </svg>
+        <div class="error-content">
+            <strong id="error-title">Error</strong>
+            <p id="error-text"></p>
+        </div>
+        <button id="close-error" class="close-btn" aria-label="Close error">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+    </div>
+    
+    <!-- Success Toast -->
+    <div id="success-message" class="success-toast" style="display: none;" role="status">
+        <svg class="icon success-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span id="success-text"></span>
+    </div>
+    
+    <!-- Application Scripts -->
+    <script src="js/video-manager.js"></script>
+    <script src="js/ar-recorder.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
