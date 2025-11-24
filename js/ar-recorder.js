@@ -8,7 +8,7 @@
  * @date November 20, 2025
  */
 
-class ARRecorder {
+export class ARRecorder {
     /**
      * Creates an ARRecorder instance
      * @constructor

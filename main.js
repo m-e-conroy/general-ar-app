@@ -7,7 +7,14 @@
  * @date November 20, 2025
  */
 
-'use strict';
+// =============================================================================
+// IMPORTS
+// =============================================================================
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MindARThree } from 'mindar-image-three';
+import { VideoManager } from './js/video-manager.js';
+import { ARRecorder } from './js/ar-recorder.js';
 
 // =============================================================================
 // AR APPLICATION CLASS
@@ -70,7 +77,7 @@ class ARApplication {
             this.updateProgress(20);
             
             // Initialize MindAR with Three.js integration
-            this.mindarThree = new window.MINDAR.IMAGE.MindARThree({
+            this.mindarThree = new MindARThree({
                 container: document.querySelector("#ar-container"),
                 imageTargetSrc: './assets/targets/targets.mind',
                 maxTrack: this.settings.maxTrack,
@@ -91,6 +98,11 @@ class ARApplication {
             this.scene = scene;
             this.camera = camera;
             
+            // Fix deprecated outputEncoding (use outputColorSpace instead)
+            if (this.renderer.outputColorSpace === undefined) {
+                this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+            }
+            
             console.log('Three.js components extracted');
             this.updateProgress(50);
             
@@ -101,6 +113,7 @@ class ARApplication {
             // Create anchor for first target (index 0)
             this.anchor1 = this.mindarThree.addAnchor(0);
             this.anchor2 = this.mindarThree.addAnchor(1);
+            this.anchor = this.anchor1; // Set primary anchor
             this.anchors.push(this.anchor1);
             this.anchors.push(this.anchor2);
             
@@ -257,7 +270,7 @@ class ARApplication {
      */
     loadGLTFModel(path, options = {}) {
         return new Promise((resolve, reject) => {
-            const loader = new THREE.GLTFLoader();
+            const loader = new GLTFLoader();
             
             loader.load(
                 path,

@@ -3,26 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="description" content="Web-based Augmented Reality application using image tracking">
     <meta name="theme-color" content="#000000">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     
     <title>AR Image Tracking Application</title>
     
-    <!-- MindAR Image Library -->
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image.prod.js"></script>
+    <!-- Import Map for ES Modules -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.156.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.156.0/examples/jsm/",
+            "mindar-image-three": "https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-three.prod.js"
+        }
+    }
+    </script>
     
-    <!-- MindAR + Three.js Integration -->
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-three.prod.js"></script>
-    
-    <!-- Three.js Library -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.156.0/build/three.min.js"></script>
-    
-    <!-- GLTF Loader for 3D Models -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.156.0/examples/js/loaders/GLTFLoader.js"></script>
-    
-    <!-- HLS.js for video streaming (optional) -->
+    <!-- HLS.js for video streaming (loaded as regular script for global access) -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     
     <!-- Application Styles -->
@@ -232,9 +233,9 @@
         <span id="success-text"></span>
     </div>
     
-    <!-- Application Scripts -->
-    <script src="js/video-manager.js"></script>
-    <script src="js/ar-recorder.js"></script>
-    <script src="main.js"></script>
+    <!-- Application Scripts as Modules -->
+    <script type="module" src="js/video-manager.js"></script>
+    <script type="module" src="js/ar-recorder.js"></script>
+    <script type="module" src="main.js"></script>
 </body>
 </html>

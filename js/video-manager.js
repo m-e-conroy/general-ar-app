@@ -8,7 +8,9 @@
  * @date November 20, 2025
  */
 
-class VideoManager {
+import * as THREE from 'three';
+
+export class VideoManager {
     /**
      * Creates a VideoManager instance
      * @constructor
