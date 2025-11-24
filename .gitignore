@@ -2,6 +2,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,a-frame,node,vuejs
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,a-frame,node,vuejs
 
+.vscode
+.vscode/*
 .vscode/**/*
 
 ### A-Frame ###

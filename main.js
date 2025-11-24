@@ -99,10 +99,12 @@ class ARApplication {
             this.updateProgress(60);
             
             // Create anchor for first target (index 0)
-            this.anchor = this.mindarThree.addAnchor(0);
-            this.anchors.push(this.anchor);
+            this.anchor1 = this.mindarThree.addAnchor(0);
+            this.anchor2 = this.mindarThree.addAnchor(1);
+            this.anchors.push(this.anchor1);
+            this.anchors.push(this.anchor2);
             
-            console.log('Anchor created for target 0');
+            console.log('Anchor created for targets');
             this.updateProgress(70);
             
             // Load 3D content (models, videos, etc.)
