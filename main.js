@@ -12,6 +12,7 @@
 // =============================================================================
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { MindARThree } from 'mindar-image-three';
 import { VideoManager } from './js/video-manager.js';
 import { ARRecorder } from './js/ar-recorder.js';
@@ -243,9 +244,14 @@ class ARApplication {
                 rotation: { x: 0, y: 0, z: 0 }
             });
             */
+           await this.loadGLTFModel('assets/models/Lil-Vic-Space-Suit-Optimized.glb', {
+                scale: 0.5,
+                position: { x: 0, y: 0, z: 0 },
+                rotation: { x: 0, y: 0, z: 0 }
+           });
             
             // Fallback: Create primitive geometry for demonstration
-            this.createPrimitiveGeometry();
+            // this.createPrimitiveGeometry();
             
             console.log('3D content loaded');
             
@@ -271,6 +277,12 @@ class ARApplication {
     loadGLTFModel(path, options = {}) {
         return new Promise((resolve, reject) => {
             const loader = new GLTFLoader();
+            
+            // Setup DRACOLoader for compressed models
+            const dracoLoader = new DRACOLoader();
+            dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+            dracoLoader.setDecoderConfig({ type: 'js' });
+            loader.setDRACOLoader(dracoLoader);
             
             loader.load(
                 path,
