@@ -11,7 +11,7 @@
     "minify:css": "csso styles.css -o styles.min.css",
     "optimize:models": "echo 'Place gltf-pipeline commands here for your specific models'",
     "compile:targets": "echo 'Use the online compiler at https://hiukim.github.io/mind-ar-js-doc/tools/compile'",
-    "deploy": "gh-pages -d ."
+    "deploy": "bash deploy.sh"
   },
   "keywords": [
     "augmented-reality",
