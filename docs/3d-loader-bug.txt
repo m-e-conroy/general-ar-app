@@ -1,0 +1,37 @@
+The GLTFLoader failed to load my model in the assets/models folder.  The following was the error message in the browser's console.
+Please fix it and report back on what was wrong how it was fixed.
+
+Loading model: 100.00%
+main.js:336 Model loading failed: Error: THREE.GLTFLoader: No DRACOLoader instance provided.
+    at new GLTFDracoMeshCompressionExtension (GLTFLoader.js:1801:10)
+    at GLTFLoader.parse (GLTFLoader.js:388:37)
+    at Object.onLoad (GLTFLoader.js:226:11)
+    at three.module.js:42071:38
+(anonymous) @ main.js:336Understand this error
+main.js:258 Failed to load 3D content: Error: THREE.GLTFLoader: No DRACOLoader instance provided.
+    at new GLTFDracoMeshCompressionExtension (GLTFLoader.js:1801:10)
+    at GLTFLoader.parse (GLTFLoader.js:388:37)
+    at Object.onLoad (GLTFLoader.js:226:11)
+    at three.module.js:42071:38
+
+================================================================================
+STATUS: FIXED
+================================================================================
+
+PROBLEM:
+The GLTF model was compressed using Draco compression (a geometry compression format).
+GLTFLoader requires a DRACOLoader instance to decompress Draco-compressed models.
+Without it, the loader cannot parse the compressed geometry data.
+
+SOLUTION:
+1. Imported DRACOLoader from 'three/addons/loaders/DRACOLoader.js'
+2. Created a DRACOLoader instance in the loadGLTFModel() method
+3. Configured it to use Google's hosted Draco decoder library (v1.5.6)
+4. Attached the DRACOLoader to the GLTFLoader using setDRACOLoader()
+
+The model should now load successfully. Draco compression is commonly used to
+reduce file sizes for 3D models, especially for web delivery.
+
+CHANGES MADE:
+- main.js: Added DRACOLoader import
+- main.js: Added DRACOLoader setup in loadGLTFModel() method
