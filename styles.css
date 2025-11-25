@@ -11,6 +11,7 @@
 
 :root {
     /* Color Palette */
+    /* Original Pallette 
     --color-primary: #4f46e5;
     --color-primary-dark: #4338ca;
     --color-secondary: #06b6d4;
@@ -18,6 +19,15 @@
     --color-warning: #f59e0b;
     --color-error: #ef4444;
     --color-info: #3b82f6;
+    */
+    /* Updated Color Palette */
+    --color-primary: #005bbb;
+    --color-primary-dark: #002f56;
+    --color-secondary: #2f9fd0;
+    --color-success: #6da04b;
+    --color-warning: #ffc72c;
+    --color-error: #e56a54;
+    --color-info: #00a69c;
     
     /* Neutral Colors */
     --color-bg-dark: #000000;
@@ -142,9 +152,9 @@ input[type="range"] {
     width: 100%;
     height: 100%;
     background: linear-gradient(135deg, 
-                rgba(79, 70, 229, 0.3) 0%, 
+                rgba(47,159,208, 0.5) 0%, 
                 rgba(0, 0, 0, 0.95) 50%,
-                rgba(6, 182, 212, 0.3) 100%);
+                rgba(0,166,156, 0.3) 100%);
     backdrop-filter: blur(10px);
     display: flex;
     flex-direction: column;
