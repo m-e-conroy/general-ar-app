@@ -1,0 +1,48 @@
+{
+  "name": "ub-ar-application",
+  "version": "1.1.1",
+  "description": "Web-based Augmented Reality application with image tracking using MindAR and Three.js",
+  "main": "main.js",
+  "scripts": {
+    "start": "http-server -p 8080 -c-1",
+    "start:ssl": "http-server -p 8443 -S -C cert.pem -K key.pem -c-1",
+    "build": "npm run minify:js && npm run minify:css",
+    "minify:js": "terser main.js -o main.min.js -c -m && terser js/video-manager.js -o js/video-manager.min.js -c -m && terser js/ar-recorder.js -o js/ar-recorder.min.js -c -m",
+    "minify:css": "csso styles.css -o styles.min.css",
+    "optimize:models": "echo 'Place gltf-pipeline commands here for your specific models'",
+    "compile:targets": "echo 'Use the online compiler at https://hiukim.github.io/mind-ar-js-doc/tools/compile'",
+    "deploy": "gh-pages -d ."
+  },
+  "keywords": [
+    "augmented-reality",
+    "ar",
+    "webxr",
+    "mindar",
+    "threejs",
+    "image-tracking",
+    "3d",
+    "mobile"
+  ],
+  "author": "Michael Conroy",
+  "license": "MIT",
+  "devDependencies": {
+    "csso-cli": "^4.0.0",
+    "gh-pages": "^6.0.0",
+    "http-server": "^14.1.1",
+    "terser": "^5.19.0"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/ub-ar.git"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "browserslist": [
+    "iOS >= 13",
+    "Chrome >= 88",
+    "Safari >= 13"
+  ]
+}
