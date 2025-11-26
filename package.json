@@ -7,7 +7,7 @@
     "start": "http-server -p 8080 -c-1",
     "start:ssl": "http-server -p 8443 -S -C cert.pem -K key.pem -c-1",
     "build": "npm run minify:js && npm run minify:css",
-    "minify:js": "terser main.js -o main.min.js -c -m && terser js/video-manager.js -o js/video-manager.min.js -c -m && terser js/ar-recorder.js -o js/ar-recorder.min.js -c -m",
+    "minify:js": "terser main.js -o main.min.js -c -m && terser js/video-manager.js -o js/video-manager.min.js -c -m && terser js/ar-recorder.js -o js/ar-recorder.min.js -c -m && terser js/touch-interface.js -o js/touch-interface.min.js -c -m",
     "minify:css": "csso styles.css -o styles.min.css",
     "optimize:models": "echo 'Place gltf-pipeline commands here for your specific models'",
     "compile:targets": "echo 'Use the online compiler at https://hiukim.github.io/mind-ar-js-doc/tools/compile'",

@@ -6,6 +6,7 @@ A web-based Augmented Reality application that uses image tracking to display 3D
 
 - **Image-based AR Tracking**: Detect and track custom images or documents
 - **3D Content Display**: Render interactive 3D models and animations
+- **Touch Interface**: Interactive 3D hotspots with popup information cards
 - **Video Playback**: Display videos as textures in 3D space (flat, curved, or 360°)
 - **Session Recording**: Record your AR experiences to video files
 - **Cross-Platform**: Works on iOS Safari and Android Chrome
@@ -279,6 +280,13 @@ Update `index.html` to reference minified files.
 ## 📄 License
 
 This project is generated from the technical specification and is provided as-is for educational and commercial use.
+
+## 📚 Additional Documentation
+
+- **[Touch Interface Guide](docs/TOUCH-INTERFACE.md)** - Complete guide for interactive 3D hotspots
+- **[Technical Specification](docs/design-and-technical.txt)** - Full technical design document
+- **[Project Summary](PROJECT-SUMMARY.md)** - Feature overview and capabilities
+- **[Quick Start](QUICKSTART.md)** - 5-minute setup guide
 
 ## 🤝 Contributing
 
