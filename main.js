@@ -16,6 +16,7 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { MindARThree } from 'mindar-image-three';
 import { VideoManager } from './js/video-manager.js';
 import { ARRecorder } from './js/ar-recorder.js';
+import { TouchInterface } from './js/touch-interface.js';
 
 // =============================================================================
 // AR APPLICATION CLASS
@@ -42,6 +43,7 @@ class ARApplication {
         this.models = [];
         this.videoManager = null;
         this.recorder = null;
+        this.touchInterface = null;
         this.settings = {
             debugMode: false,
             autoRotate: true,
@@ -132,6 +134,15 @@ class ARApplication {
             // Initialize recorder
             this.recorder = new ARRecorder(this.renderer, this.scene, this.camera);
             console.log('ARRecorder initialized');
+            
+            // Initialize touch interface
+            const arContainer = document.querySelector('#ar-container');
+            this.touchInterface = new TouchInterface(this.camera, arContainer);
+            this.touchInterface.init();
+            console.log('TouchInterface initialized');
+            
+            // Add example hotspots to demonstrate functionality
+            this.setupExampleHotspots();
             
             this.updateProgress(90);
             
@@ -245,7 +256,7 @@ class ARApplication {
             });
             */
            await this.loadGLTFModel('assets/models/Lil-Vic-Space-Suit-Optimized.glb', {
-                scale: 0.5,
+                scale: 1.0,
                 position: { x: 0, y: 0, z: 0 },
                 rotation: { x: 0, y: 0, z: 0 }
            });
@@ -390,6 +401,65 @@ class ARApplication {
         console.log('Primitive geometry created');
     }
     
+    /**
+     * Sets up example hotspots to demonstrate touch interface
+     * @precondition TouchInterface and anchor must be initialized
+     * @postcondition Example hotspots are added to demonstrate functionality
+     */
+    setupExampleHotspots() {
+        if (!this.touchInterface || !this.anchor) return;
+        
+        // Example hotspot 1: Above the model
+        this.touchInterface.addHotspot({
+            position: new THREE.Vector3(0, 0.8, 0),
+            label: 'Top Component',
+            icon: '🔵',
+            content: `
+                <p><strong>Upper Section</strong></p>
+                <p>This is the top component of the 3D model. Tap hotspots to learn more about different parts.</p>
+                <ul>
+                    <li>Interactive touch elements</li>
+                    <li>Real-time 3D positioning</li>
+                    <li>Contextual information</li>
+                </ul>
+            `,
+            parent: this.anchor.group
+        });
+        
+        // Example hotspot 2: To the left
+        this.touchInterface.addHotspot({
+            position: new THREE.Vector3(-0.4, 0.3, 0),
+            label: 'Left Feature',
+            icon: '⭐',
+            content: `
+                <p><strong>Side Component</strong></p>
+                <p>This hotspot demonstrates positioning on the side of the model.</p>
+                <p>Hotspots automatically update their screen position as the camera moves.</p>
+            `,
+            parent: this.anchor.group
+        });
+        
+        // Example hotspot 3: To the right
+        this.touchInterface.addHotspot({
+            position: new THREE.Vector3(0.4, 0.3, 0),
+            label: 'Right Feature',
+            icon: '💡',
+            content: `
+                <p><strong>Additional Info</strong></p>
+                <p>Touch interface elements can display any HTML content including:</p>
+                <ul>
+                    <li>Text and images</li>
+                    <li>Lists and tables</li>
+                    <li>Links and buttons</li>
+                </ul>
+                <p><a href="https://github.com/m-e-conroy/general-ar-app" target="_blank">View Documentation</a></p>
+            `,
+            parent: this.anchor.group
+        });
+        
+        console.log('Example hotspots configured');
+    }
+    
     // =========================================================================
     // EVENT HANDLING
     // =========================================================================
@@ -441,6 +511,11 @@ class ARApplication {
             }
         });
         
+        // Enable touch interface
+        if (this.touchInterface) {
+            this.touchInterface.enable();
+        }
+        
         // Update instruction UI
         const instructions = document.querySelector('#instructions');
         const instructionText = document.querySelector('#instruction-text');
@@ -465,6 +540,11 @@ class ARApplication {
                 model.visible = false;
             }
         });
+        
+        // Disable touch interface
+        if (this.touchInterface) {
+            this.touchInterface.disable();
+        }
         
         // Update instruction UI
         const instructions = document.querySelector('#instructions');
@@ -681,6 +761,11 @@ class ARApplication {
             // Update custom animations
             if (this.settings.autoRotate) {
                 this.updateCustomAnimations(delta);
+            }
+            
+            // Update touch interface hotspot positions
+            if (this.touchInterface) {
+                this.touchInterface.updateHotspotPositions();
             }
             
             // Render the scene
